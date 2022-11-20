@@ -13,13 +13,13 @@
 #
 # When a user builds better-sqlite3, the following steps are taken:
 # 1. node-gyp loads the previously exported compile-time options (defines.gypi).
-# 2. the copy.js script copies the bundled amalgamation into the build folder.
-# 3. node-gyp compiles the copied sqlite3.c along with better_sqlite3.cpp.
+# 2. the symlink.js script creates symlinks to the bundled amalgamation.
+# 3. node-gyp compiles the symlinked sqlite3.c along with better_sqlite3.cpp.
 # 4. node-gyp links the two resulting binaries to generate better_sqlite3.node.
 # ===
 
 YEAR="2022"
-VERSION="3390400"
+VERSION="3370200"
 
 DEFINES="
 SQLITE_DQS=0
@@ -98,9 +98,8 @@ DOCS="$DEPS/../docs/compilation.md"
 MAJOR=`expr "${VERSION:0:1}" + 0`
 MINOR=`expr "${VERSION:1:2}" + 0`
 PATCH=`expr "${VERSION:3:2}" + 0`
-sed -Ei.bak -e "s/version [0-9]+\.[0-9]+\.[0-9]+/version $MAJOR.$MINOR.$PATCH/g" "$DOCS"
-sed -i.bak -e "/^SQLITE_/,\$d" "$DOCS"
-rm "$DOCS".bak
+sed -Ei "" -e "s/version [0-9]+\.[0-9]+\.[0-9]+/version $MAJOR.$MINOR.$PATCH/g" "$DOCS"
+sed -i "" -e "/^SQLITE_/,\$d" "$DOCS"
 printf "$DEFINES" | sed -e "/^\s*$/d" >> "$DOCS"
 printf "\`\`\`\n" >> "$DOCS"
 

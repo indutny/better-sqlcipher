@@ -104,8 +104,7 @@ void SetPrototypeGetter (v8::Isolate * isolate, v8::Local <v8::External> data, v
                 0,
                 data,
                 v8::AccessControl::DEFAULT,
-                v8::PropertyAttribute::None,
-                v8::AccessorSignature::New(isolate, recv)
+                v8::PropertyAttribute::None
         );
 }
 #line 4 "./src/util/constants.lzz"
@@ -1748,13 +1747,6 @@ int CustomTable::xBestIndex (sqlite3_vtab * vtab, sqlite3_index_info * output)
                         auto item = output->aConstraint[i];
 
 
-
-
-
-                        if (item.op == SQLITE_INDEX_CONSTRAINT_LIMIT || item.op == SQLITE_INDEX_CONSTRAINT_OFFSET) {
-                                continue;
-                        }
-
                         if (item.iColumn >= 0 && item.iColumn < parameter_count) {
                                 if (item.op != SQLITE_INDEX_CONSTRAINT_EQ) {
                                         sqlite3_free(vtab->zErrMsg);
@@ -1789,9 +1781,9 @@ int CustomTable::xBestIndex (sqlite3_vtab * vtab, sqlite3_index_info * output)
                 output->estimatedCost = output->estimatedRows = 1000000000 / (argument_count + 1);
                 return SQLITE_OK;
 }
-#line 394 "./src/util/custom-table.lzz"
+#line 387 "./src/util/custom-table.lzz"
 void CustomTable::PropagateJSError ()
-#line 394 "./src/util/custom-table.lzz"
+#line 387 "./src/util/custom-table.lzz"
                                 {
                 assert(db->GetState()->was_js_error == false);
                 db->GetState()->was_js_error = true;
@@ -1956,7 +1948,7 @@ bool Binder::IsPlainObject (v8::Isolate * isolate, v8::Local <v8::Object> obj)
 #line 35 "./src/util/binder.lzz"
                                                                                    {
                 v8::Local<v8::Value> proto = obj->GetPrototype();
-                v8::Local<v8::Context> ctx = obj->CreationContext();
+                v8::Local<v8::Context> ctx = obj->GetCreationContext().ToLocalChecked();
                 ctx->Enter();
                 v8::Local<v8::Value> baseProto = v8::Object::New(isolate)->GetPrototype();
                 ctx->Exit();
